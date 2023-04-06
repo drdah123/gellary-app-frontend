@@ -67,6 +67,9 @@ export default function SimpleModal({
                     color={isUserLike ? 'red' : '#fff'}
                     onClick={(e) => {
                       e.preventDefault();
+
+                      if (!value.token) return;
+
                       likePostHandler({
                         variables: { postId: selectedPost?._id },
                       });
