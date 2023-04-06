@@ -120,6 +120,7 @@ export default function ProfilePage() {
       />
       <SimpleModal
         show={isShow}
+        setShow={setIsShow}
         selectedPost={selectedPost}
         setAlert={setAlert}
         setSelectedPost={setSelectedPost}

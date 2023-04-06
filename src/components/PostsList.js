@@ -2,7 +2,8 @@ import { useApolloClient, useQuery } from '@apollo/client';
 import { Spinner } from 'reactstrap';
 import PostItem from './PostItem';
 import { MY_POSTS, POSTS } from '../queries';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import authContext from '../context/auth-context';
 
 export default function PostsList({
   setAlert,
@@ -14,6 +15,7 @@ export default function PostsList({
   deletePost,
 }) {
   const client = useApolloClient();
+  const { likes } = useContext(authContext);
 
   const { loading, error, data } = useQuery(isProfilePost ? MY_POSTS : POSTS);
 
@@ -22,9 +24,13 @@ export default function PostsList({
     client.refetchQueries({
       include: isProfilePost ? ['GetMyPosts'] : ['Posts'],
     });
-  }, []);
+  }, [likes]);
   if (loading) {
-    return <Spinner />;
+    return (
+      <div className="d-flex justify-content-center ">
+        <Spinner />
+      </div>
+    );
   }
   if (error) {
     setAlert(error.message);

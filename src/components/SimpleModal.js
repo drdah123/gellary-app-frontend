@@ -11,6 +11,7 @@ export default function SimpleModal({
   setAlert,
   onCancel,
   show,
+  setShow,
 }) {
   const value = useContext(authContext);
 
@@ -27,6 +28,7 @@ export default function SimpleModal({
     },
     onCompleted: () => {
       setSelectedPost(null);
+      setShow && setShow(false);
     },
   });
 
