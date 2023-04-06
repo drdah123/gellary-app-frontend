@@ -10,6 +10,7 @@ export default function SimpleModal({
   setSelectedPost,
   setAlert,
   onCancel,
+  show,
 }) {
   const value = useContext(authContext);
 
@@ -45,12 +46,12 @@ export default function SimpleModal({
 
   return (
     <div>
-      <Modal show={selectedPost} onHide={onCancel} className="custom-modal">
+      <Modal show={show} onHide={onCancel} className="custom-modal">
         <Modal.Body className="modal-body-card">
           <div className="card">
             <img
               className="card-img-top"
-              src={'http://localhost:4000/' + selectedPost?.image}
+              src={process.env.REACT_APP_BACKEND_URL + selectedPost?.image}
               alt={selectedPost?.title}
             />
 

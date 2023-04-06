@@ -42,7 +42,9 @@ export const CREATE_USER = gql`
       token
       email
       name
-      likes
+      likes {
+        post
+      }
       _id
     }
   }
@@ -68,36 +70,45 @@ export const CREATE_POST = gql`
 `;
 
 export const DELETE_POST = gql`
-  mutation DeletePost($postId: ID!) {
-    deletePost(postId: $postId) {
-      Message
-    }
-  }
-`;
-export const UPLOAD_IMAGE = gql`
-  mutation singleUpload($file: Upload!) {
-    singleUpload(file: $file) {
+  mutation DeletePost($postId: ID!, $postImage: String!) {
+    deletePost(postId: $postId, postImage: $postImage) {
       message
     }
   }
 `;
+
 export const UPDATE_POST = gql`
   ${PostFields}
   mutation UpdatePost(
     $postId: ID!
     $title: String!
     $description: String!
-    $image: String!
+    $file: Upload!
   ) {
     updatePost(
       postId: $postId
-      postInput: { title: $title, description: $description, image: $image }
+      postInput: { title: $title, description: $description, file: $file }
     ) {
       ...PostFields
     }
   }
 `;
-
+export const UPDATE_POST_WITHOUT_IMAGE = gql`
+  ${PostFields}
+  mutation UpdatePostWithoutImage(
+    $postId: ID!
+    $title: String!
+    $description: String!
+  ) {
+    updatePostWithoutImage(
+      postId: $postId
+      title: $title
+      description: $description
+    ) {
+      ...PostFields
+    }
+  }
+`;
 export const POST_ADDED = gql`
   ${PostFields}
   subscription {

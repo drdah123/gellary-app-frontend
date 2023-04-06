@@ -1,8 +1,8 @@
-import React from 'react' 
-import { Alert } from 'reactstrap' 
-   
-const Error = props => {
-    return props.error ? <Alert>{props.error}</Alert> : ''
-} 
+import React from 'react';
+import { Alert } from 'reactstrap';
 
-export default Error 
+const Error = ({ error }) => {
+  return error ? <Alert>{error}</Alert> : '';
+};
+
+export default Error;

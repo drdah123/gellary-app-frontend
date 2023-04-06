@@ -7,7 +7,6 @@ import { createUploadLink } from 'apollo-upload-client';
 import App from './App';
 import {
   ApolloClient,
-  createHttpLink,
   InMemoryCache,
   ApolloProvider,
   split,
@@ -18,13 +17,13 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 
 const httpLink = createUploadLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: process.env.REACT_APP_BACKEND_URL_GRAPHQL,
   credentials: 'same-origin',
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:4000/graphql',
+    url: process.env.REACT_APP_BACKEND_URL_WS,
     connectionParams: {
       authToken: localStorage.getItem('token'),
     },

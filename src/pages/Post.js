@@ -5,11 +5,12 @@ import SimpleModal from '../components/SimpleModal';
 import AuthContext from '../context/auth-context';
 import Error from '../components/Error';
 import Spinner from '../components/Spinner';
-import PostList from '../components/PostList';
+import PostList from '../components/PostsList';
 import CreatePost from '../components/CreatePost';
 
-const initialPostState = {
+export const initialPostState = {
   title: '',
+  file: null,
   description: '',
 };
 
@@ -113,6 +114,7 @@ export default function PostsPage() {
         selectedPost={selectedPost}
         setAlert={setAlert}
         setSelectedPost={setSelectedPost}
+        show={selectedPost}
         onCancel={onCancel}
       />
     </div>

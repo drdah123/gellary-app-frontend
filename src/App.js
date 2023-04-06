@@ -16,10 +16,6 @@ export default function App() {
   let [likes, setLikes] = useState(
     JSON.parse(localStorage?.getItem('likes')) || []
   );
-  // useEffect(() => {
-  //   console.log('🚀 ~ file: App.js:17 ~ App ~ likes:', likes);
-  // }, [likes]);
-
   const login = (userToken, loginUserId, name, likes) => {
     if (userToken) {
       setToken(userToken);

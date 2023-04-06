@@ -1,78 +1,130 @@
-import React, { useContext, useState } from 'react';
-import Spinner from '../components/Spinner';
-import { MY_POSTS, DELETE_POST, UPDATE_POST } from '../queries';
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import React, { useState } from 'react';
+import {
+  DELETE_POST,
+  UPDATE_POST,
+  UPDATE_POST_WITHOUT_IMAGE,
+} from '../queries';
+import { useMutation, useApolloClient } from '@apollo/client';
 import Error from '../components/Error';
-import PostItem from '../components/PostItem';
 import SimpleModal from '../components/SimpleModal';
-import { NavLink } from 'reactstrap';
-import authContext from '../context/auth-context';
+import CreatePost from '../components/CreatePost';
+import { initialPostState } from './Post';
+import PostsList from '../components/PostsList';
 
 export default function ProfilePage() {
   const [alert, setAlert] = useState('');
   const [selectedPost, setSelectedPost] = useState(null);
-  const value = useContext(authContext);
+  const [postUpdated, setPostUpdated] = useState(initialPostState);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [modelAlert, setModelAlert] = useState('');
 
   const client = useApolloClient();
 
-  function PostsList() {
-    const { error, loading, data } = useQuery(MY_POSTS);
-
-    if (loading) {
-      return <Spinner />;
+  function onCancel() {
+    setSelectedPost(null);
+    setIsShow(false);
+    setIsUpdate(false);
+    setAlert('');
+  }
+  const [postConfirmHandler] = useMutation(UPDATE_POST, {
+    onError: (error) => {
+      setIsShow(false);
+      setIsUpdate(false);
+      setAlert(error.message);
+    },
+    onCompleted: () => {
+      setIsShow(false);
+      setIsUpdate(false);
+      setAlert('تم تعديل المنشور بنجاح');
+    },
+  });
+  const [postConfirmHandlerWithoutImage] = useMutation(
+    UPDATE_POST_WITHOUT_IMAGE,
+    {
+      onError: (error) => {
+        setIsShow(false);
+        setIsUpdate(false);
+        setAlert(error.message);
+      },
+      onCompleted: () => {
+        setIsShow(false);
+        setIsUpdate(false);
+        setAlert('تم تعديل المنشور بنجاح');
+        client.refetchQueries({
+          include: ['GetMyPosts'],
+        });
+      },
     }
-    if (error) {
-      setAlert(error?.message);
+  );
+
+  function postHandler(item, value) {
+    setPostUpdated((prevS) => ({ ...prevS, [item]: value }));
+  }
+
+  function onConfirm(_id) {
+    if (
+      postUpdated.title.trim().length === 0 ||
+      postUpdated.description.trim().length === 0
+    ) {
+      setModelAlert('يجب ملئ جميع الحقول بالشكل الصحيح!');
       return;
     }
+    if (postUpdated.file === selectedPost.file) {
+      postConfirmHandlerWithoutImage({
+        variables: { postId: _id, ...postUpdated },
+      });
+    } else {
+      postConfirmHandler({
+        variables: {
+          postId: _id,
+          ...postUpdated,
+        },
+      });
+    }
 
-    client.refetchQueries({
-      include: ['Posts'],
-    });
-    const showDetailHandler = (postId) => {
-      const clickedPost = data?.getMyPosts.find((post) => post._id === postId);
-      setSelectedPost(clickedPost);
-    };
-    return (
-      <div>
-        <Error error={alert} />
-        <div className="row">
-          <div className="col-md-8 offset-md-2">
-            {data?.getMyPosts.map((post) => (
-              <PostItem
-                isProfilePost
-                key={post?._id}
-                {...post}
-                onDeletePost={() => {
-                  deletePost({ variables: { postId: post?._id } });
-                }}
-                onDetail={showDetailHandler}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    setPostUpdated(initialPostState);
   }
 
   const [deletePost] = useMutation(DELETE_POST, {
     onError: (error) => setAlert(error.message),
     onCompleted: () => {
-      setAlert('تم إلغاء حجزك');
+      setAlert('تم حذف المنشور');
+      client.refetchQueries({
+        include: ['GetMyPosts'],
+      });
     },
   });
 
   return (
     <div className="container-fluid">
       <h2>منشوراتك</h2>
-      <PostsList />
-      {selectedPost && (
-        <SimpleModal
-          selectedPost={selectedPost}
-          setAlert={setAlert}
-          setSelectedPost={setSelectedPost}
-        />
-      )}
+      <Error error={alert} />
+      <PostsList
+        setAlert={setAlert}
+        setSelectedPost={setSelectedPost}
+        isProfilePost
+        setIsShow={setIsShow}
+        setIsUpdate={setIsUpdate}
+        setPostUpdated={setPostUpdated}
+        deletePost={deletePost}
+      />{' '}
+      <CreatePost
+        creating={isUpdate}
+        modelAlert={modelAlert}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        post={postUpdated}
+        postHandler={postHandler}
+        isUpdate
+      />
+      <SimpleModal
+        show={isShow}
+        selectedPost={selectedPost}
+        setAlert={setAlert}
+        setSelectedPost={setSelectedPost}
+        onCancel={onCancel}
+      />
     </div>
   );
 }

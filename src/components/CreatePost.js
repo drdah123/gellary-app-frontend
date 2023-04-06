@@ -10,12 +10,18 @@ export default function CreatePost({
   creating,
   onConfirm,
   modelAlert,
+  isUpdate,
 }) {
   return (
     <Modal show={creating} onHide={onCancel}>
-      <Modal.Header>انشاء منشور</Modal.Header>
+      <Modal.Header>{isUpdate ? 'تعديل المنشور' : 'انشاء منشور'}</Modal.Header>
       <Modal.Body>
-        <form onSubmit={onConfirm}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onConfirm(post._id);
+          }}
+        >
           <Error error={modelAlert} />
           <div className="mb-1">
             <label className="form-label" htmlFor="title">
@@ -26,20 +32,30 @@ export default function CreatePost({
               required
               type="text"
               id="title"
-              value={post.title}
+              value={post?.title}
               onChange={({ target }) => postHandler('title', target.value)}
             />
           </div>
           <div className="mb-1 mt-1">
-            <label className="form-label" htmlFor="price">
-              السعر
+            {isUpdate && (
+              <>
+                {' '}
+                <p>الصورة السابقة</p>
+                <img
+                  className="card-img-top"
+                  src={process.env.REACT_APP_BACKEND_URL + post?.image}
+                  alt="Card cap"
+                />
+              </>
+            )}
+            <label className="form-label" htmlFor="image">
+              الصورة
             </label>
             <input
               className="form-control"
-              required
               title="صوة"
               type="file"
-              id="price"
+              id="image"
               onChange={({
                 target: {
                   files: [file],
@@ -58,13 +74,13 @@ export default function CreatePost({
               required
               id="description"
               rows="3"
-              value={post.description}
+              value={post?.description}
               onChange={({ target }) =>
                 postHandler('description', target.value)
               }
             />
           </div>
-          <Button type="submit">انشاء</Button>
+          <Button type="submit">{isUpdate ? 'تعديل' : 'انشاء'}</Button>
         </form>
       </Modal.Body>
     </Modal>

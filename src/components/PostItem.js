@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { SuitHeartFill } from 'react-bootstrap-icons';
 import authContext from '../context/auth-context';
 
@@ -17,11 +17,11 @@ export default function PostItem({
     [likes]
   );
   return (
-    <div className=" col-md-4 col-lg-3 col-6" onClick={() => onDetail(_id)}>
-      <div className="card">
+    <div className=" mb-3 col-md-4 col-lg-3 col-6">
+      <div className="card" onClick={() => onDetail(_id, 'show')}>
         <img
           className="card-img-top"
-          src={'http://localhost:4000/' + image}
+          src={process.env.REACT_APP_BACKEND_URL + image}
           alt="Card cap"
         />
         <div className="card-img-overlay">
@@ -29,12 +29,17 @@ export default function PostItem({
             <SuitHeartFill color={isUserLike ? 'red' : '#fff'} /> {likesNumber}
           </p>
         </div>
-        {isProfilePost ? (
+      </div>
+      {isProfilePost ? (
+        <div>
           <button className="btn" onClick={() => onDeletePost(_id)}>
             حذف
           </button>
-        ) : null}
-      </div>
+          <button className="btn" onClick={() => onDetail(_id, 'update')}>
+            تعديل
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
