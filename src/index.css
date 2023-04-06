@@ -50,6 +50,15 @@ h2 {
   padding: 0;
   margin: 0;
 }
+.navbar {
+  position: fixed !important;
+  width: 100%;
+  top: 0;
+  z-index: 999;
+}
+.main-navigation-items ul li {
+  margin-bottom: 1rem;
+}
 
 .main-navigation-items li {
   margin: 0 1rem;
@@ -183,4 +192,8 @@ img {
 .btn-hover:hover {
   cursor: pointer;
   z-index: 9999 !important;
+}
+
+.navbar-light .navbar-toggler {
+  background-color: #fff;
 }
