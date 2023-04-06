@@ -124,6 +124,7 @@ h2 {
 .btn {
   background: var(--primary-color) !important;
   color: white !important;
+  margin-left: 0.6rem;
 }
 
 button[disabled],

@@ -26,6 +26,7 @@ export default function LoginPage() {
         value.login(token, userId, name, likes);
       }
     }, [data, loading]);
+    useEffect(() => setTimeout(() => setAlert(''), 5 * 1000), [alert]);
 
     if (loading) return <Spinner />;
 
@@ -68,7 +69,7 @@ export default function LoginPage() {
           />
         </div>
         <div className="form-actions">
-          <button className="btn m-2" type="submit">
+          <button className="btn " type="submit">
             إرسال
           </button>
           <button className="btn" onClick={() => navigate('/signUp')}>

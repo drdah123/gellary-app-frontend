@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { SuitHeartFill, XLg } from 'react-bootstrap-icons';
 import authContext from '../context/auth-context';
 import { useMutation } from '@apollo/client';
 import { LIKE_POST } from '../queries';
+import Error from './Error';
 
 export default function SimpleModal({
   selectedPost,
@@ -14,6 +15,7 @@ export default function SimpleModal({
   setShow,
 }) {
   const value = useContext(authContext);
+  const [message, setMessage] = useState('');
 
   const isUserLike = useMemo(
     () => value.likes?.some((item) => item.post === selectedPost?._id),
@@ -31,6 +33,9 @@ export default function SimpleModal({
       setShow && setShow(false);
     },
   });
+  useEffect(() => {
+    setTimeout(() => setMessage(''), 7.5 * 1000);
+  }, [message]);
 
   useEffect(() => {
     let likes;
@@ -67,8 +72,10 @@ export default function SimpleModal({
                     color={isUserLike ? 'red' : '#fff'}
                     onClick={(e) => {
                       e.preventDefault();
-
-                      if (!value.token) return;
+                      if (!value.token)
+                        return setMessage(
+                          'تحتاج الى تسجيل الدخول لاعطاء اعجاب'
+                        );
 
                       likePostHandler({
                         variables: { postId: selectedPost?._id },
@@ -81,6 +88,7 @@ export default function SimpleModal({
               <p className="card-text">{selectedPost?.description}</p>
               <div className="card-img-overlay">
                 <XLg className="btn-hover" onClick={onCancel} />
+                <Error error={message} />
               </div>
             </div>
           </div>

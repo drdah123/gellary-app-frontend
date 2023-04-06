@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DELETE_POST,
   UPDATE_POST,
@@ -27,6 +27,9 @@ export default function ProfilePage() {
     setIsUpdate(false);
     setAlert('');
   }
+  useEffect(() => {
+    setTimeout(() => setAlert(''), 5 * 1000);
+  }, [alert]);
   const [postConfirmHandler] = useMutation(UPDATE_POST, {
     onError: (error) => {
       setIsShow(false);

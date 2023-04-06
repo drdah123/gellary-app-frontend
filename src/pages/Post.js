@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext } from 'react';
 import { useMutation, useApolloClient, useSubscription } from '@apollo/client';
 import { CREATE_POST, POST_ADDED } from '../queries';
 import SimpleModal from '../components/SimpleModal';
@@ -67,6 +67,7 @@ export default function PostsPage() {
       post.description.trim().length === 0
     ) {
       setModelAlert('يجب ملئ جميع الحقول بالشكل الصحيح!');
+      setTimeout(() => setModelAlert(''), 5 * 1000);
       return;
     }
     postConfirmHandler({
